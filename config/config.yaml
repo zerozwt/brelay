@@ -1,0 +1,9 @@
+inbounds:
+  - name: Local
+    addr: "localhost:8888"
+    filters: []
+    tls_key: ""
+    tls_pem: ""
+    tls_insecure: false
+log_file: ""
+login_key: dfhr908uw4kf093jffehugi
