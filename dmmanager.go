@@ -22,7 +22,7 @@ type subMailbox chan client.MsgSubscribeBatch
 
 type dmManager struct {
 	job_ch  chan func()
-	subs    map[int][]*subscriberInfo             // room_id => subscribers
+	subs    map[int]map[uint32]*subscriberInfo    // room_id => subscriber_id => subscribers
 	cache   map[uint32][]client.MsgSubscribeBatch // subscriber_id => cached msgs
 	mailbox map[uint32]subMailbox                 // subscriber_id => recv channel
 	next_id uint32
@@ -33,7 +33,7 @@ var gDanmaku *dmManager = newBLiveDanmakuManager()
 func newBLiveDanmakuManager() *dmManager {
 	ret := &dmManager{
 		job_ch:  make(chan func(), 1024),
-		subs:    make(map[int][]*subscriberInfo),
+		subs:    make(map[int]map[uint32]*subscriberInfo),
 		cache:   make(map[uint32][]client.MsgSubscribeBatch),
 		mailbox: make(map[uint32]subMailbox),
 	}
@@ -123,7 +123,7 @@ func (m *dmManager) onServerShutdown() {
 	m.cache = make(map[uint32][]client.MsgSubscribeBatch)
 
 	// clear all subscribers
-	m.subs = make(map[int][]*subscriberInfo)
+	m.subs = make(map[int]map[uint32]*subscriberInfo)
 
 	// close all mailbox
 	for _, mailbox := range m.mailbox {
@@ -144,21 +144,17 @@ func (m *dmManager) ClearSubscribe(sub_id uint32) error {
 	return m.ExecJob(func() { m.clearSubBySubID(sub_id) })
 }
 
-func (m *dmManager) deleteSubByID(list []*subscriberInfo, sub_id uint32) []*subscriberInfo {
-	ret := make([]*subscriberInfo, 0, len(list))
-	for _, item := range list {
-		if item.id == sub_id {
-			continue
-		}
-		ret = append(ret, item)
-	}
-	return ret
-}
-
 func (m *dmManager) clearSubBySubID(sub_id uint32) {
-	new_subs := make(map[int][]*subscriberInfo)
-	for room_id := range m.subs {
-		new_subs[room_id] = m.deleteSubByID(m.subs[room_id], sub_id)
+	new_subs := make(map[int]map[uint32]*subscriberInfo)
+	for room_id, room_sub := range m.subs {
+		if _, ok := room_sub[sub_id]; ok {
+			delete(room_sub, sub_id)
+			if len(room_sub) > 0 {
+				new_subs[room_id] = room_sub
+			}
+		} else {
+			new_subs[room_id] = room_sub
+		}
 	}
 	m.subs = new_subs
 }
@@ -169,7 +165,10 @@ func (m *dmManager) SubscribeRoom(room_id int, sub_id uint32, cmds []string) {
 			id:   sub_id,
 			cmds: append([]string{}, cmds...),
 		}
-		m.subs[room_id] = append(m.subs[room_id], info)
+		if _, ok := m.subs[room_id]; !ok {
+			m.subs[room_id] = make(map[uint32]*subscriberInfo)
+		}
+		m.subs[room_id][sub_id] = info
 
 		go gClientMgr.AddClient(sub_id, room_id)
 	})
