@@ -49,7 +49,7 @@ func testClient(name string, life time.Duration, t *testing.T) {
 	}
 	defer ctx.Close()
 
-	err = relay_client.Subscribe([]client.MsgSubscribeRoom{{RoomID: 22865391, Cmds: []string{dm.CMD_DANMU_MSG}}})
+	err = relay_client.Subscribe([]client.MsgSubscribeRoom{{RoomID: 7777, Cmds: []string{dm.CMD_DANMU_MSG}}})
 	if err != nil {
 		t.Errorf("client subscribe failed: %v", err)
 		return
@@ -80,7 +80,7 @@ func testClient(name string, life time.Duration, t *testing.T) {
 			if item.Cmd == dm.CMD_DANMU_MSG {
 				data = relay_client.ReadBodyBytes(data, "info")
 			}
-			logger().Printf("[%s]  cmd=%s msg_type=%d data=%s", name, item.Cmd, item.MsgType, string(data))
+			logger().Printf("[%s]  room=%d cmd=%s msg_type=%d data=%s", name, item.RoomID, item.Cmd, item.MsgType, string(data))
 		}
 	}
 }
