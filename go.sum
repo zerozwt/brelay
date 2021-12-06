@@ -33,6 +33,8 @@ github.com/zerozwt/toyframe v1.0.3 h1:8PEXx8oanhqj2ZT5VKu9bILGzhD0vns1g8f1dJGzlE
 github.com/zerozwt/toyframe v1.0.3/go.mod h1:2IeBlTNQyobUrxHzNcOySajv8KqxOFQnUIh/aUz389A=
 github.com/zerozwt/toyframe v1.0.4 h1:n6OHVp4H6V+rvY0Uc5Uxgpp+gx+l3wRjxv7ApuhNszQ=
 github.com/zerozwt/toyframe v1.0.4/go.mod h1:2IeBlTNQyobUrxHzNcOySajv8KqxOFQnUIh/aUz389A=
+github.com/zerozwt/toyframe v1.0.5 h1:5BQjME8Hy84sNtxf1tXCNzOgVitFxMjnav5F8BRZxuk=
+github.com/zerozwt/toyframe v1.0.5/go.mod h1:2IeBlTNQyobUrxHzNcOySajv8KqxOFQnUIh/aUz389A=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
